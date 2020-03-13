@@ -14,6 +14,10 @@ const bootcamps = require('./routes/bootcamps');
 
 const app = express();
 
+// Body parser
+app.use(express.json());
+
+// Dev logging middleware
 const logger = (req, res, next) => {
   req.hello = 'hello world';
   console.log('Middleware ran');
