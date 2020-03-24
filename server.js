@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 const connectDB = require('./config/db');
 const colors = require('colors');
 const errorHandler = require('./middleware/error');
@@ -19,12 +20,9 @@ const app = express();
 app.use(express.json());
 
 // Dev logging middleware
-const logger = (req, res, next) => {
-  req.hello = 'hello world';
-  console.log('Middleware ran');
-  next();
-};
-app.use(logger);
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 // Mount routers
 app.use('/api/v1/bootcamps', bootcamps);
 
@@ -40,9 +38,9 @@ const server = app.listen(
   )
 );
 
-// Handle unhandled promise rejection
+// Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`.red);
   // Close server & exit process
-  server.close(() => process.exit(1));
+  server.close(() => process.exit(1)); // exit(1) for exit with failure
 });
